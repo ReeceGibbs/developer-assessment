@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TodoList.Api.Context;
 
 namespace TodoList.Api.Controllers
 {
@@ -11,10 +12,10 @@ namespace TodoList.Api.Controllers
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly ITodoContext _context;
         private readonly ILogger<TodoItemsController> _logger;
 
-        public TodoItemsController(TodoContext context, ILogger<TodoItemsController> logger)
+        public TodoItemsController(ITodoContext context, ILogger<TodoItemsController> logger)
         {
             _context = context;
             _logger = logger;
@@ -51,7 +52,7 @@ namespace TodoList.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(todoItem).State = EntityState.Modified;
+            //_context.Entry(todoItem).State = EntityState.Modified;
 
             try
             {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using TodoList.Api.Models;
 
 namespace TodoList.Api.Context
 {

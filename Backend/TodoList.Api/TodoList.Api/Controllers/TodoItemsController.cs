@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TodoList.Api.ModelBinders;
 using TodoList.Api.Models;
 using TodoList.Api.Services;
 
@@ -37,9 +38,7 @@ namespace TodoList.Api.Controllers
             var result = await _todoItemsService.GetTodoItemById(id);
 
             if (result == null)
-            {
                 return NotFound();
-            }
 
             return Ok(result);
         }
@@ -78,22 +77,15 @@ namespace TodoList.Api.Controllers
 
         // POST: api/TodoItems 
         [HttpPost]
-        public async Task<IActionResult> PostTodoItem(TodoItem todoItem)
+        public async Task<IActionResult> PostTodoItem([ModelBinder(BinderType = typeof(TodoItemModelBinder))] TodoItem todoItem)
         {
-            //**NEEDS TO BE REFACTORED. THINK ABOUT DOING THE MODEL CHECKING AS AN ATTRIBUTE**
-            if (string.IsNullOrEmpty(todoItem?.Description))
-            {
-                return BadRequest("Description is required");
-            }
-            else if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-            {
+            if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
                 return BadRequest("Description already exists");
-            }
 
             var success = await _todoItemsService.CreateTodoItem(todoItem);
 
             return success ?
-                CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem) :
+                CreatedAtAction(nameof(GetTodoItem), todoItem) :
                 StatusCode(500);
         }
     }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using TodoList.Api.ModelBinders;
 using TodoList.Api.Models;
@@ -27,66 +27,90 @@ namespace TodoList.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTodoItems()
         {
-            var results = await _todoItemsService.GetTodoItemsList();
-            return Ok(results);
+            try
+            {
+                var results = await _todoItemsService.GetTodoItemsList();
+                return ResponseExtensions<List<TodoItem>>.SuccessResponse(HttpStatusCode.OK, results);
+            }
+            catch (Exception ex)
+            {
+                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // GET: api/TodoItems/...
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTodoItem(Guid id)
         {
-            var result = await _todoItemsService.GetTodoItemById(id);
+            try
+            {
+                if (!_todoItemsService.TodoItemIdExists(id))
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+                var result = await _todoItemsService.GetTodoItemById(id);
+                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // PUT: api/TodoItems/... 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(Guid id, TodoItem todoItem)
+        [HttpPut]
+        public async Task<IActionResult> PutTodoItem(TodoItem todoItem)
         {
-            //**NEEDS TO BE REFACTORED**
+            try
+            {
+                if (!_todoItemsService.TodoItemIdExists(todoItem.Id))
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
 
-            //if (id != todoItem.Id)
-            //{
-            //    return BadRequest();
-            //}
+                if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, "Description already exists");
 
-            ////_context.Entry(todoItem).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!TodoItemIdExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            return Ok("To Implement");
+                var result = await _todoItemsService.UpdateTodoItem(todoItem);
+                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // POST: api/TodoItems 
         [HttpPost]
         public async Task<IActionResult> PostTodoItem([ModelBinder(BinderType = typeof(TodoItemModelBinder))] TodoItem todoItem)
         {
-            if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                return BadRequest("Description already exists");
+            try
+            {
+                if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, "Description already exists");
 
-            var success = await _todoItemsService.CreateTodoItem(todoItem);
+                var result = await _todoItemsService.CreateTodoItem(todoItem);
+                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.Created, result);
+            }
+            catch (Exception ex)
+            {
+                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
 
-            return success ?
-                CreatedAtAction(nameof(GetTodoItem), todoItem) :
-                StatusCode(500);
+        // DELETE: api/TodoItems/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoItem(Guid id)
+        {
+            try
+            {
+                if (!_todoItemsService.TodoItemIdExists(id))
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
+
+                var result = await _todoItemsService.DeleteTodoItem(id);
+                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.NoContent, null);
+            }
+            catch (Exception ex)
+            {
+                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
     }
 }

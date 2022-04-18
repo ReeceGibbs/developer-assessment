@@ -9,7 +9,9 @@ namespace TodoList.Api.Services
     {
         Task<List<TodoItem>> GetTodoItemsList();
         Task<TodoItem> GetTodoItemById(Guid id);
-        Task<bool> CreateTodoItem(TodoItem item);
+        Task<TodoItem> CreateTodoItem(TodoItem todoItem);
+        Task<TodoItem> UpdateTodoItem(TodoItem todoItem);
+        Task<Guid> DeleteTodoItem(Guid id);
         bool TodoItemIdExists(Guid id);
         bool TodoItemDescriptionExists(string description);
     }

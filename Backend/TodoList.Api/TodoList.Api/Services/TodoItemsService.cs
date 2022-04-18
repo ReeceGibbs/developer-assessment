@@ -27,19 +27,32 @@ namespace TodoList.Api.Services
             return await _context.TodoItems.FindAsync(id);
         }
 
-        public async Task<bool> CreateTodoItem(TodoItem item)
+        public async Task<TodoItem> CreateTodoItem(TodoItem todoItem)
         {
-            try
-            {
-                _context.TodoItems.Add(item);
-                await _context.SaveChangesAsync();
+            todoItem.Description = todoItem.Description.Trim();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            _context.TodoItems.Add(todoItem);
+            await _context.SaveChangesAsync();
+
+            return todoItem;
+        }
+
+        public async Task<TodoItem> UpdateTodoItem(TodoItem todoItem)
+        {
+            todoItem.Description = todoItem.Description.Trim();
+
+            _context.Update(todoItem);
+            await _context.SaveChangesAsync();
+
+            return todoItem;
+        }
+
+        public async Task<Guid> DeleteTodoItem(Guid id)
+        {
+            _context.Delete(id);
+            await _context.SaveChangesAsync();
+
+            return id;
         }
 
         public bool TodoItemIdExists(Guid id)
@@ -50,7 +63,7 @@ namespace TodoList.Api.Services
         public bool TodoItemDescriptionExists(string description)
         {
             return _context.TodoItems
-                   .Any(x => x.Description.ToLowerInvariant() == description.ToLowerInvariant() && !x.IsCompleted);
+                   .Any(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
         }
     }
 }

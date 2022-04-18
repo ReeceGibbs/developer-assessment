@@ -9,7 +9,6 @@ namespace TodoList.Api.ModelBinders
 {
     public class TodoItemModelBinder : IModelBinder
     {
-        // custom model binder to handle our responses to the caller for more meaningful feedback
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext == null)
@@ -44,7 +43,7 @@ namespace TodoList.Api.ModelBinders
             }
             catch (Exception ex)
             {
-                bindingContext.ModelState.TryAddModelError("TodoItem", ex.Message);
+                bindingContext.ModelState.TryAddModelError(bindingContext.OriginalModelName, ex.Message);
             }
 
             return Task.CompletedTask;

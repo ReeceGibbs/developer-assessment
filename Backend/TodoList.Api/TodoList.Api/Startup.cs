@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TodoList.Api.Context;
 using TodoList.Api.Services;
+using TodoList.Api.Swashbuckle;
 
 namespace TodoList.Api
 {
@@ -34,8 +35,12 @@ namespace TodoList.Api
             });
 
             services.AddControllers();
+
+            // We use custom operation filters to cater for the custom model binders when using swagger
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
+                c.OperationFilter<TodoItemOperationFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TodoList.Api", Version = "v1" });
             });
 
@@ -51,7 +56,11 @@ namespace TodoList.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoList.Api v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.DefaultModelsExpandDepth(-1);
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoList.Api v1");
+                });
             }
 
             app.UseHttpsRedirection();

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using TodoList.Api.ModelBinders;
 using TodoList.Api.Models;
@@ -23,8 +25,9 @@ namespace TodoList.Api.Controllers
             _logger = logger;
         }
 
-        // GET: api/TodoItems
         [HttpGet]
+        [SwaggerResponse(200, null, typeof(Response<TodoItem>), "application/json")]
+        [SwaggerOperation(Summary = "TodoItems: Get List", Description = "Returns a list of all incomplete todo items")]
         public async Task<IActionResult> GetTodoItems()
         {
             try
@@ -38,8 +41,10 @@ namespace TodoList.Api.Controllers
             }
         }
 
-        // GET: api/TodoItems/...
         [HttpGet("{id}")]
+        [SwaggerResponse(200, null, typeof(Response<TodoItem>), "application/json")]
+        [SwaggerResponse(404, "Todo item not found", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerOperation(Summary = "TodoItems: Get Item", Description = "Returns a todo item by id")]
         public async Task<IActionResult> GetTodoItem(Guid id)
         {
             try
@@ -56,16 +61,19 @@ namespace TodoList.Api.Controllers
             }
         }
 
-        // PUT: api/TodoItems/... 
-        [HttpPut]
-        public async Task<IActionResult> PutTodoItem(TodoItem todoItem)
+        [HttpPut(Name = "TodoItemPut")]
+        [SwaggerResponse(200, null, typeof(Response<TodoItem>), "application/json")]
+        [SwaggerResponse(404, "Todo item not found", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerResponse(409, "Description already exists", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerOperation(Summary = "TodoItems: Update Item", Description = "Updates an existing todo item")]
+        public async Task<IActionResult> PutTodoItem([ModelBinder(BinderType = typeof(TodoItemModelBinder))] TodoItem todoItem)
         {
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(todoItem.Id))
                     return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
 
-                if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
+                if (!todoItem.IsCompleted && _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
                     return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, "Description already exists");
 
                 var result = await _todoItemsService.UpdateTodoItem(todoItem);
@@ -77,8 +85,10 @@ namespace TodoList.Api.Controllers
             }
         }
 
-        // POST: api/TodoItems 
-        [HttpPost]
+        [HttpPost(Name = "TodoItemPost")]
+        [SwaggerResponse(201, null, typeof(Response<TodoItem>), "application/json")]
+        [SwaggerResponse(409, "Description already exists", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerOperation(Summary = "TodoItems: Create Item", Description = "Creates a new todo item")]
         public async Task<IActionResult> PostTodoItem([ModelBinder(BinderType = typeof(TodoItemModelBinder))] TodoItem todoItem)
         {
             try
@@ -95,8 +105,10 @@ namespace TodoList.Api.Controllers
             }
         }
 
-        // DELETE: api/TodoItems/{id}
         [HttpDelete("{id}")]
+        [SwaggerResponse(204)]
+        [SwaggerResponse(409, "Description already exists", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerOperation(Summary = "TodoItems: Delete Item", Description = "Deletes an existing todo item by id")]
         public async Task<IActionResult> DeleteTodoItem(Guid id)
         {
             try

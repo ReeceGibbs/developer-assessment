@@ -24,9 +24,11 @@ namespace TodoList.Api.ModelBinders
                 Guid id = Guid.NewGuid();
                 var buffer = new byte[Convert.ToInt32(request.ContentLength)];
                 request.Body.ReadAsync(buffer, 0, buffer.Length);
-
                 string rawBody = Encoding.UTF8.GetString(buffer);
-                dynamic rawTodoItem = JObject.Parse(rawBody);
+                dynamic rawTodoItem;
+
+                try { rawTodoItem = JObject.Parse(rawBody); }
+                catch { throw new Exception("Request payload invalid format"); }
 
                 if (!rawTodoItem.ContainsKey("description") || String.IsNullOrEmpty(rawTodoItem.description.Value.Trim()))
                     throw new Exception("Description is required");

@@ -29,7 +29,7 @@ namespace TodoList.Api.Services
 
         public async Task<TodoItem> CreateTodoItem(TodoItem todoItem)
         {
-            todoItem.Description = todoItem.Description.Trim();
+            todoItem.Description = todoItem.Description?.Trim();
 
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();
@@ -39,7 +39,7 @@ namespace TodoList.Api.Services
 
         public async Task<TodoItem> UpdateTodoItem(TodoItem todoItem)
         {
-            todoItem.Description = todoItem.Description.Trim();
+            todoItem.Description = todoItem.Description?.Trim();
 
             _context.Update(todoItem);
             await _context.SaveChangesAsync();

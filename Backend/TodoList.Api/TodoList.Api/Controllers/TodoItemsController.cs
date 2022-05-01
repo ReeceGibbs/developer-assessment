@@ -17,13 +17,18 @@ namespace TodoList.Api.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoItemsService _todoItemsService;
-        private readonly ILogger<TodoItemsController> _logger;
 
-        public TodoItemsController(ITodoItemsService todoItemsService, ILogger<TodoItemsController> logger)
+        public TodoItemsController(ITodoItemsService todoItemsService)
         {
             _todoItemsService = todoItemsService;
-            _logger = logger;
         }
+
+        public static string ToResponseMessage(HttpStatusCode httpStatusCode) => httpStatusCode switch
+        {
+            HttpStatusCode.NotFound => "Todo item not found",
+            HttpStatusCode.Conflict => "Description already exists",
+            _=> "Oops... Something went wrong"
+        };
 
         [HttpGet]
         [SwaggerResponse(200, null, typeof(Response<TodoItem>), "application/json")]
@@ -50,7 +55,7 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.GetTodoItemById(id);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
@@ -71,10 +76,10 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(todoItem.Id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 if (!todoItem.IsCompleted && _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, "Description already exists");
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.UpdateTodoItem(todoItem);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
@@ -94,7 +99,7 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, "Description already exists");
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.CreateTodoItem(todoItem);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.Created, result);
@@ -114,7 +119,7 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, "Todo item not found");
+                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.DeleteTodoItem(id);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.NoContent, null);

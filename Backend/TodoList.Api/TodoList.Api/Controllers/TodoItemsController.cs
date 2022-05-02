@@ -27,7 +27,7 @@ namespace TodoList.Api.Controllers
         {
             HttpStatusCode.NotFound => "Todo item not found",
             HttpStatusCode.Conflict => "Description already exists",
-            _=> "Oops... Something went wrong"
+            _=> "Unmapped error code"
         };
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace TodoList.Api.Controllers
             }
             catch (Exception ex)
             {
-                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -55,14 +55,14 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
+                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.GetTodoItemById(id);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
             }
             catch (Exception ex)
             {
-                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -76,17 +76,17 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(todoItem.Id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
+                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 if (!todoItem.IsCompleted && _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
+                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.UpdateTodoItem(todoItem);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
             }
             catch (Exception ex)
             {
-                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -99,34 +99,34 @@ namespace TodoList.Api.Controllers
             try
             {
                 if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
+                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.CreateTodoItem(todoItem);
                 return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.Created, result);
             }
             catch (Exception ex)
             {
-                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(409, "Description already exists", typeof(Response<TodoItem>), "application/json")]
+        [SwaggerResponse(404, "Todo item not found", typeof(Response<TodoItem>), "application/json")]
         [SwaggerOperation(Summary = "TodoItems: Delete Item", Description = "Deletes an existing todo item by id")]
         public async Task<IActionResult> DeleteTodoItem(Guid id)
         {
             try
             {
                 if (!_todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
+                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.DeleteTodoItem(id);
-                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.NoContent, null);
+                return ResponseExtensions<object>.SuccessResponse(HttpStatusCode.NoContent, null);
             }
             catch (Exception ex)
             {
-                return ResponseExtensions<TodoItem>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
     }

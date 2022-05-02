@@ -32,13 +32,13 @@ namespace TodoList.Api.UnitTests.Controllers
                 {
                     new TodoItem
                     {
-                        Id = new Guid("fede7bcd-20a0-4c7a-8077-219dbd0118f4"),
+                        Id = Guid.NewGuid(),
                         Description = "Test 0",
                         IsCompleted = false
                     },
                     new TodoItem
                     {
-                        Id = new Guid("de30013b-96c0-477a-b704-2d4977637d14"),
+                        Id = Guid.NewGuid(),
                         Description = "Test 1",
                         IsCompleted = true
                     },
@@ -125,7 +125,228 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task GetTodoItem_server_error()
         {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
 
+            var expectedResult = new Response<List<TodoItem>>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
+            };
+
+            var result = (ObjectResult)await (_todoItemsController.GetTodoItem(Guid.NewGuid()));
+
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PutTodoItem_success()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+
+            var mockTodoItem = new TodoItem
+            {
+                Id = Guid.NewGuid(),
+                Description = "Test 0",
+                IsCompleted = false,
+            };
+
+            _todoItemsService.Setup(s => s.UpdateTodoItem(It.IsAny<TodoItem>())).Returns(Task.FromResult(mockTodoItem));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = true,
+                Data = mockTodoItem
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PutTodoItem(mockTodoItem);
+
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PutTodoItem_not_found()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(false);
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PutTodoItem(new TodoItem());
+
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PutTodoItem_conflict()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(true);
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("Conflict", "Description already exists")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PutTodoItem(new TodoItem());
+
+            Assert.Equal(409, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PutTodoItem_server_error()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+
+            _todoItemsService.Setup(s => s.UpdateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PutTodoItem(new TodoItem());
+
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PostTodoItem_success()
+        {
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+
+            var mockTodoItem = new TodoItem
+            {
+                Id = Guid.NewGuid(),
+                Description = "Test 0",
+                IsCompleted = false,
+            };
+
+            _todoItemsService.Setup(s => s.CreateTodoItem(It.IsAny<TodoItem>())).Returns(Task.FromResult(mockTodoItem));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = true,
+                Data = mockTodoItem
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PostTodoItem(mockTodoItem);
+
+            Assert.Equal(201, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PostTodoItem_conflict()
+        {
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(true);
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("Conflict", "Description already exists")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PostTodoItem(new TodoItem());
+
+            Assert.Equal(409, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task PostTodoItem_server_error()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+
+            _todoItemsService.Setup(s => s.CreateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.PostTodoItem(new TodoItem());
+
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task DeleteTodoItem_success()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Returns(Task.FromResult(Guid.NewGuid()));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = true,
+                Data = null
+            };
+
+            var result = (ObjectResult)await _todoItemsController.DeleteTodoItem(Guid.NewGuid());
+
+            Assert.Equal(204, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task DeleteTodoItem_not_found()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(false);
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.DeleteTodoItem(Guid.NewGuid());
+
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
+        }
+
+        [Fact]
+        public async Task DeleteTodoItem_server_error()
+        {
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
+
+            var expectedResult = new Response<TodoItem>
+            {
+                Success = false,
+                Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
+            };
+
+            var result = (ObjectResult)await _todoItemsController.DeleteTodoItem(Guid.NewGuid());
+
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
+                JsonConvert.SerializeObject(result.Value));
         }
     }
 }

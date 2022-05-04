@@ -9,7 +9,8 @@ namespace TodoList.Api.Context
     {
         DbSet<TodoItem> TodoItems { get; set; }
         Task<int> SaveChangesAsync();
-        void Update(TodoItem todoItem);
-        void Delete(Guid id);
+        Task AddAndSaveAsync(TodoItem todoItem);
+        Task UpdateAndSaveAsync(TodoItem todoItem);
+        Task DeleteAndSaveAsync(Guid id);
     }
 }

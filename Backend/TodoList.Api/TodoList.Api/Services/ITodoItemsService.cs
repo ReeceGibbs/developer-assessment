@@ -12,7 +12,7 @@ namespace TodoList.Api.Services
         Task<TodoItem> CreateTodoItem(TodoItem todoItem);
         Task<TodoItem> UpdateTodoItem(TodoItem todoItem);
         Task<Guid> DeleteTodoItem(Guid id);
-        bool TodoItemIdExists(Guid id);
-        bool TodoItemDescriptionExists(string description);
+        Task<bool> TodoItemIdExists(Guid id);
+        Task<bool> TodoItemDescriptionExists(string description);
     }
 }

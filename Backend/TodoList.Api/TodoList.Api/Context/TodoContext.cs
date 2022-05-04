@@ -10,20 +10,28 @@ namespace TodoList.Api.Context
         public TodoContext(DbContextOptions<TodoContext> options) : base(options) { }
         public DbSet<TodoItem> TodoItems { get; set; }
 
-        Task<int> ITodoContext.SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
             return base.SaveChangesAsync();
         }
 
-        void ITodoContext.Update(TodoItem todoItem)
+        public async Task AddAndSaveAsync(TodoItem todoItem)
         {
-            base.Entry(todoItem).State = EntityState.Modified;
+            TodoItems.Add(todoItem);
+            await SaveChangesAsync();
         }
 
-        async void ITodoContext.Delete(Guid id)
+        public async Task UpdateAndSaveAsync(TodoItem todoItem)
+        {
+            base.Entry(todoItem).State = EntityState.Modified;
+            await SaveChangesAsync();
+        }
+
+        public async Task DeleteAndSaveAsync(Guid id)
         {
             var todoItem = await TodoItems.FindAsync(id);
             base.Entry(todoItem).State = EntityState.Deleted;
+            await SaveChangesAsync();
         }
     }
 }

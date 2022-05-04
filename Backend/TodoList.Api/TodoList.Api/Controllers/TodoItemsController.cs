@@ -54,7 +54,7 @@ namespace TodoList.Api.Controllers
         {
             try
             {
-                if (!_todoItemsService.TodoItemIdExists(id))
+                if (!await _todoItemsService.TodoItemIdExists(id))
                     return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.GetTodoItemById(id);
@@ -75,10 +75,10 @@ namespace TodoList.Api.Controllers
         {
             try
             {
-                if (!_todoItemsService.TodoItemIdExists(todoItem.Id))
+                if (!await _todoItemsService.TodoItemIdExists(todoItem.Id))
                     return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
-                if (!todoItem.IsCompleted && _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
+                if (!todoItem.IsCompleted && await _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
                     return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.UpdateTodoItem(todoItem);
@@ -98,7 +98,7 @@ namespace TodoList.Api.Controllers
         {
             try
             {
-                if (_todoItemsService.TodoItemDescriptionExists(todoItem.Description))
+                if (await _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
                     return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
 
                 var result = await _todoItemsService.CreateTodoItem(todoItem);
@@ -118,7 +118,7 @@ namespace TodoList.Api.Controllers
         {
             try
             {
-                if (!_todoItemsService.TodoItemIdExists(id))
+                if (!await _todoItemsService.TodoItemIdExists(id))
                     return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
 
                 var result = await _todoItemsService.DeleteTodoItem(id);

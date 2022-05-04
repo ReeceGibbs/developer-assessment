@@ -30,9 +30,7 @@ namespace TodoList.Api.Services
         public async Task<TodoItem> CreateTodoItem(TodoItem todoItem)
         {
             todoItem.Description = todoItem.Description?.Trim();
-
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            await _context.AddAndSaveAsync(todoItem);
 
             return todoItem;
         }
@@ -40,30 +38,26 @@ namespace TodoList.Api.Services
         public async Task<TodoItem> UpdateTodoItem(TodoItem todoItem)
         {
             todoItem.Description = todoItem.Description?.Trim();
-
-            _context.Update(todoItem);
-            await _context.SaveChangesAsync();
+            await _context.UpdateAndSaveAsync(todoItem);
 
             return todoItem;
         }
 
         public async Task<Guid> DeleteTodoItem(Guid id)
         {
-            _context.Delete(id);
-            await _context.SaveChangesAsync();
-
+            await _context.DeleteAndSaveAsync(id);
             return id;
         }
 
-        public bool TodoItemIdExists(Guid id)
+        public async Task<bool> TodoItemIdExists(Guid id)
         {
-            return _context.TodoItems.Any(x => x.Id == id);
+            return await _context.TodoItems.AnyAsync(x => x.Id == id);
         }
 
-        public bool TodoItemDescriptionExists(string description)
+        public async Task<bool> TodoItemDescriptionExists(string description)
         {
-            return _context.TodoItems
-                   .Any(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
+            return await _context.TodoItems
+                   .AnyAsync(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
         }
     }
 }

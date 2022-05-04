@@ -80,7 +80,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task GetTodoItem_success()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
             var mockTodoItem = new TodoItem
             {
@@ -107,7 +107,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task GetTodoItem_not_found()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
             var expectedResult = new Response<TodoItem>
             {
@@ -125,7 +125,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task GetTodoItem_server_error()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
 
             var expectedResult = new Response<List<TodoItem>>
@@ -144,8 +144,8 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PutTodoItem_success()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
             var mockTodoItem = new TodoItem
             {
@@ -172,7 +172,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PutTodoItem_not_found()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
             var expectedResult = new Response<TodoItem>
             {
@@ -190,8 +190,8 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PutTodoItem_conflict()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(true));
 
             var expectedResult = new Response<TodoItem>
             {
@@ -209,8 +209,8 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PutTodoItem_server_error()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
             _todoItemsService.Setup(s => s.UpdateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
 
@@ -230,7 +230,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PostTodoItem_success()
         {
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
             var mockTodoItem = new TodoItem
             {
@@ -257,7 +257,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PostTodoItem_conflict()
         {
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(true));
 
             var expectedResult = new Response<TodoItem>
             {
@@ -275,8 +275,8 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task PostTodoItem_server_error()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
-            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
             _todoItemsService.Setup(s => s.CreateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
 
@@ -296,7 +296,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task DeleteTodoItem_success()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Returns(Task.FromResult(Guid.NewGuid()));
 
             var expectedResult = new Response<TodoItem>
@@ -315,7 +315,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task DeleteTodoItem_not_found()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(false);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
             var expectedResult = new Response<TodoItem>
             {
@@ -333,7 +333,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task DeleteTodoItem_server_error()
         {
-            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(true);
+            _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
 
             var expectedResult = new Response<TodoItem>

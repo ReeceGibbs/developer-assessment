@@ -124,22 +124,22 @@ namespace TodoList.Api.UnitTests.Services
         }
 
         [Fact]
-        public void TodoItemIdExists()
+        public async Task TodoItemIdExists()
         {
             using (var context = new TodoContext(_contextOptions))
             {
                 TodoItemsService todoItemsService = new TodoItemsService(context);
-                Assert.True(todoItemsService.TodoItemIdExists(_mockTodoItems[0].Id));
+                Assert.True(await todoItemsService.TodoItemIdExists(_mockTodoItems[0].Id));
             }
         }
 
         [Fact]
-        public void TodoItemDescriptionExists()
+        public async Task TodoItemDescriptionExists()
         {
             using (var context = new TodoContext(_contextOptions))
             {
                 TodoItemsService todoItemsService = new TodoItemsService(context);
-                Assert.True(todoItemsService.TodoItemDescriptionExists(_mockTodoItems[0].Description));
+                Assert.True(await todoItemsService.TodoItemDescriptionExists(_mockTodoItems[0].Description));
             }
         }
     }

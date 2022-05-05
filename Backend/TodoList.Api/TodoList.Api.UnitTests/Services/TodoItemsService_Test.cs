@@ -30,15 +30,15 @@ namespace TodoList.Api.UnitTests.Services
 
             using (var context = new TodoContext(_contextOptions))
             {
-                _mockTodoItems = new List<TodoItem>
+                _mockTodoItems = new List<TodoItem>()
                 {
-                    new TodoItem
+                    new TodoItem()
                     {
                         Id = new Guid("fede7bcd-20a0-4c7a-8077-219dbd0118f4"),
                         Description = "Test 0",
                         IsCompleted = false
                     },
-                    new TodoItem
+                    new TodoItem()
                     {
                         Id = new Guid("de30013b-96c0-477a-b704-2d4977637d14"),
                         Description = "Test 1",
@@ -98,7 +98,7 @@ namespace TodoList.Api.UnitTests.Services
 
                 TodoItemsService todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.UpdateTodoItem(
-                    new TodoItem
+                    new TodoItem()
                     {
                         Id = _mockTodoItems[0].Id,
                         Description = "Test 0",

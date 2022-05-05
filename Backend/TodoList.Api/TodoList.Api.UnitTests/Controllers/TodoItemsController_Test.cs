@@ -28,7 +28,7 @@ namespace TodoList.Api.UnitTests.Controllers
         [Fact]
         public async Task GetTodoItems_success()
         {
-            var mockTodoItems = new List<TodoItem>
+            var mockTodoItems = new List<TodoItem>()
                 {
                     new TodoItem
                     {
@@ -46,7 +46,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.GetTodoItemsList()).Returns(Task.FromResult(mockTodoItems));
 
-            var expectedResult = new Response<List<TodoItem>>
+            var expectedResult = new Response<List<TodoItem>>()
             {
                 Success = true,
                 Data = mockTodoItems
@@ -64,7 +64,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.GetTodoItemsList()).Throws(new Exception("Database access error"));
 
-            var expectedResult = new Response<List<TodoItem>>
+            var expectedResult = new Response<List<TodoItem>>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
@@ -82,7 +82,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
-            var mockTodoItem = new TodoItem
+            var mockTodoItem = new TodoItem()
             {
                 Id = Guid.NewGuid(),
                 Description = "Test 0",
@@ -91,7 +91,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Returns(Task.FromResult(mockTodoItem));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = true,
                 Data = mockTodoItem
@@ -109,7 +109,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
@@ -128,7 +128,7 @@ namespace TodoList.Api.UnitTests.Controllers
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
 
-            var expectedResult = new Response<List<TodoItem>>
+            var expectedResult = new Response<List<TodoItem>>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
@@ -147,7 +147,7 @@ namespace TodoList.Api.UnitTests.Controllers
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
-            var mockTodoItem = new TodoItem
+            var mockTodoItem = new TodoItem()
             {
                 Id = Guid.NewGuid(),
                 Description = "Test 0",
@@ -156,7 +156,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.UpdateTodoItem(It.IsAny<TodoItem>())).Returns(Task.FromResult(mockTodoItem));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = true,
                 Data = mockTodoItem
@@ -174,7 +174,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
@@ -193,7 +193,7 @@ namespace TodoList.Api.UnitTests.Controllers
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(true));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("Conflict", "Description already exists")
@@ -214,7 +214,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.UpdateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
@@ -232,7 +232,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(false));
 
-            var mockTodoItem = new TodoItem
+            var mockTodoItem = new TodoItem()
             {
                 Id = Guid.NewGuid(),
                 Description = "Test 0",
@@ -241,7 +241,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.CreateTodoItem(It.IsAny<TodoItem>())).Returns(Task.FromResult(mockTodoItem));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = true,
                 Data = mockTodoItem
@@ -259,7 +259,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemDescriptionExists(It.IsAny<string>())).Returns(Task.FromResult(true));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("Conflict", "Description already exists")
@@ -280,7 +280,7 @@ namespace TodoList.Api.UnitTests.Controllers
 
             _todoItemsService.Setup(s => s.CreateTodoItem(It.IsAny<TodoItem>())).Throws(new Exception("Database access error"));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
@@ -299,7 +299,7 @@ namespace TodoList.Api.UnitTests.Controllers
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Returns(Task.FromResult(Guid.NewGuid()));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = true,
                 Data = null
@@ -317,7 +317,7 @@ namespace TodoList.Api.UnitTests.Controllers
         {
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
@@ -336,7 +336,7 @@ namespace TodoList.Api.UnitTests.Controllers
             _todoItemsService.Setup(s => s.TodoItemIdExists(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _todoItemsService.Setup(s => s.DeleteTodoItem(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
 
-            var expectedResult = new Response<TodoItem>
+            var expectedResult = new Response<TodoItem>()
             {
                 Success = false,
                 Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")

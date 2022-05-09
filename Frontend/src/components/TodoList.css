@@ -4,3 +4,14 @@
     padding: 0;
     margin-top: 15%;
 }
+
+.toast {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px 10px;
+}
+
+.red {
+    color: #A41623;
+}

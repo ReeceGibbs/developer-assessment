@@ -11,7 +11,7 @@ namespace TodoList.Api.Middleware
     public class RequestAuthMiddleware
     {
         private readonly RequestDelegate _next;
-        const string APIKEY = "ApiKey";
+        const string APIKEY = "API_KEY";
 
         public RequestAuthMiddleware(RequestDelegate next)
         {

@@ -30,7 +30,7 @@ namespace TodoList.Api.Swashbuckle
 
             operation.Parameters.Add(new OpenApiParameter
             {
-                Name = "ApiKey",
+                Name = "API_KEY",
                 In = ParameterLocation.Header,
                 Description = "Api Key"
             });

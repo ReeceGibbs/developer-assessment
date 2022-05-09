@@ -19,7 +19,7 @@ namespace TodoList.Api.Services
 
         public async Task<List<TodoItem>> GetTodoItemsList()
         {
-            return await _context.TodoItems.Where(x => !x.IsCompleted).ToListAsync();
+            return await _context.TodoItems.ToListAsync();
         }
 
         public async Task<TodoItem> GetTodoItemById(Guid id)

@@ -59,7 +59,7 @@ namespace TodoList.Api.UnitTests.Services
                 TodoItemsService todoItemsService = new TodoItemsService(context);
                 var todoItems = await todoItemsService.GetTodoItemsList();
 
-                Assert.Single(todoItems);
+                Assert.Equal(2, todoItems.Count);
             }
         }
 

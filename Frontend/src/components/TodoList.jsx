@@ -2,38 +2,56 @@ import './TodoList.css'
 import { Container, Toast } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react'
 import TodoListItem from './TodoListItem';
-import { getTodoItems } from '../api/todoItems.api';
+import { createTodoItem, getTodoItems, updateTodoItem } from '../api/todoItems.api';
 
 const TodoList = () => {
     const [todoItems, setTodoItems] = useState([]);
     const [toastError, setToastError] = useState("");
 
     const handleChecked = (event) => {
+        handleToastClose();
+
         let tempTodoItems = [...todoItems];
         const todoItemIndex = tempTodoItems.findIndex(todoItem => todoItem.id === event.target.id);
 
         if (todoItemIndex > -1) {
-            const updatedTodoItem = {
+            const payload = {
                 ...todoItems[todoItemIndex],
                 isCompleted: event.target.checked
             };
 
-            tempTodoItems.splice(todoItemIndex, 1);
-            tempTodoItems.push(updatedTodoItem);
+            updateTodoItem(payload, (response) => {
+                if (response.error) {
+                    setToastError(response.error.value);
+                    return;
+                }
 
-            setTodoItems(tempTodoItems);
+                tempTodoItems.splice(todoItemIndex, 1);
+                tempTodoItems.push(response.data);
+
+                setTodoItems(tempTodoItems);
+            })
         }
     };
 
-    const handleAdd = (description) => {
-        let tempTodoItems = [...todoItems]
-        tempTodoItems.push({
-            id: (new Date()).getUTCMilliseconds().toString(),
-            description: description,
-            isCompleted: false
-        });
+    const handleAdd = async (description) => {
+        handleToastClose();
 
-        setTodoItems(tempTodoItems);
+        const payload = {
+            description: description
+        };
+
+        await createTodoItem(payload, (response) => {
+            let tempTodoItems = [...todoItems]
+
+            if (response.error) {
+                setToastError(response.error.value);
+                return;
+            }
+
+            tempTodoItems.push(response.data);
+            setTodoItems(tempTodoItems);
+        });
     }
 
     let colourCounter = -1;

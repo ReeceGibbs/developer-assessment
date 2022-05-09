@@ -21,6 +21,11 @@ const TodoListItem = (props) => {
         }
     }
 
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter")
+            handleAdd();
+    };
+
     return (
         <Row className={colours[props.colour]}>
             <Col>
@@ -32,6 +37,7 @@ const TodoListItem = (props) => {
                         isInvalid={isInputInvalid}
                         isValid={!isInputInvalid}
                         value={description}
+                        onKeyPress={handleKeyPress}
                     /> :
                     <h5 className={props.isCompleted ? "isCompleted" : undefined}>{props.description}</h5>}
             </Col>
@@ -45,7 +51,7 @@ const TodoListItem = (props) => {
                         className="floatRight"
                         type="checkbox"
                         id={props.id}
-                        defaultChecked={props.isCompleted}
+                        checked={props.isCompleted}
                         onChange={props.handleChecked}
                     />}
             </Col>

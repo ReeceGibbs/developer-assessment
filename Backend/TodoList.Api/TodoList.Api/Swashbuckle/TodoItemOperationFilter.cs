@@ -9,24 +9,31 @@ namespace TodoList.Api.Swashbuckle
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (operation.OperationId != "TodoItemPut" && operation.OperationId != "TodoItemPost")
-                return;
-
-            operation.Parameters.Clear();
-
-            operation.RequestBody = new OpenApiRequestBody
+            if (operation.OperationId == "TodoItemPut" || operation.OperationId == "TodoItemPost")
             {
-                Content = new Dictionary<string, OpenApiMediaType>
+                operation.Parameters.Clear();
+
+                operation.RequestBody = new OpenApiRequestBody()
                 {
+                    Content = new Dictionary<string, OpenApiMediaType>()
                     {
-                        "application/json",
-                        new OpenApiMediaType
                         {
-                            Schema = context.SchemaGenerator.GenerateSchema(typeof(TodoItem), context.SchemaRepository)
+                            "application/json",
+                            new OpenApiMediaType
+                            {
+                                Schema = context.SchemaGenerator.GenerateSchema(typeof(TodoItem), context.SchemaRepository)
+                            }
                         }
                     }
-                }
-            };
+                };
+            }
+
+            operation.Parameters.Add(new OpenApiParameter
+            {
+                Name = "ApiKey",
+                In = ParameterLocation.Header,
+                Description = "Api Key"
+            });
         }
     }
 }

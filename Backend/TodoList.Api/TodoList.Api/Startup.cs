@@ -72,6 +72,8 @@ namespace TodoList.Api
 
             app.UseAuthorization();
 
+            app.UseMiddleware<RequestAuthMiddleware>();
+
             app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.UseEndpoints(endpoints =>

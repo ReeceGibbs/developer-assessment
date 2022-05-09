@@ -1,0 +1,58 @@
+.clearfix {
+    overflow: auto;
+}
+
+.floatRight {
+    float: right;
+}
+
+.form-check-input {
+    background-color: #2F323A !important;
+}
+
+.textBox {
+    background-color: #2F323A !important;
+    border: none;
+    color: white !important;
+    width: 100%;
+}
+
+.addButton {
+    cursor: pointer;
+}
+
+.row {
+    padding: 0px 5px;
+    margin: 5px 0px;
+    min-height: fit-content;
+    height: 50px;
+    align-items: center;
+}
+
+.blue {
+    background-color: #00A5CF;
+}
+
+.green {
+    background-color: #9FFFCB;
+}
+
+.orange {
+    background-color: #FE5F55;
+}
+
+.yellow {
+    background-color: #F7B32B;
+}
+
+.new {
+    background-color: #E9E3B4;
+}
+
+.header {
+    color: white;
+}
+
+.isCompleted {
+    text-decoration: line-through;
+}

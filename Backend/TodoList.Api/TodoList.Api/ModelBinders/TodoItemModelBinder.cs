@@ -11,6 +11,8 @@ namespace TodoList.Api.ModelBinders
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
+            Guid id = Guid.NewGuid();
+
             if (bindingContext == null)
                 throw new ArgumentNullException(nameof(bindingContext));
 
@@ -21,7 +23,6 @@ namespace TodoList.Api.ModelBinders
 
             try
             {
-                Guid id = Guid.NewGuid();
                 var buffer = new byte[Convert.ToInt32(request.ContentLength)];
                 request.Body.ReadAsync(buffer, 0, buffer.Length);
                 string rawBody = Encoding.UTF8.GetString(buffer);
@@ -45,7 +46,7 @@ namespace TodoList.Api.ModelBinders
             }
             catch (Exception ex)
             {
-                bindingContext.ModelState.TryAddModelError(bindingContext.OriginalModelName, ex.Message);
+                bindingContext.ModelState.TryAddModelError(bindingContext.OriginalModelName ?? id.ToString(), ex.Message);
             }
 
             return Task.CompletedTask;

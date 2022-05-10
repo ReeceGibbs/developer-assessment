@@ -23,7 +23,7 @@ namespace TodoList.Api.Middleware
             if (!httpContext.Request.Headers.TryGetValue(APIKEY, out var requestApiKey))
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await httpContext.Response.WriteAsJsonAsync(ResponseExtensions<object>.FailureResponse(HttpStatusCode.Unauthorized, "Missing api key"));
+                await httpContext.Response.WriteAsJsonAsync(ResponseExtensions<object>.FailureResponse(HttpStatusCode.Unauthorized, "Authentication failed: Missing key"));
 
                 return;
             }
@@ -34,7 +34,7 @@ namespace TodoList.Api.Middleware
             if (apiKey != requestApiKey)
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await httpContext.Response.WriteAsJsonAsync(ResponseExtensions<object>.FailureResponse(HttpStatusCode.Unauthorized, "Invalid api key"));
+                await httpContext.Response.WriteAsJsonAsync(ResponseExtensions<object>.FailureResponse(HttpStatusCode.Unauthorized, "Authentication failed: Invalid key"));
 
                 return;
             }

@@ -39,7 +39,7 @@ export const createTodoItem = async (payload, finalize) => {
         finalize(result.value ?? result);
     }
     catch {
-        return ({
+        finalize({
             error: {
                 key: "ServiceUnavailable",
                 value: "Server currently unavailable"
@@ -63,7 +63,7 @@ export const updateTodoItem = async (payload, finalize) => {
         finalize(result.value ?? result);
     }
     catch {
-        return ({
+        finalize({
             error: {
                 key: "ServiceUnavailable",
                 value: "Server currently unavailable"

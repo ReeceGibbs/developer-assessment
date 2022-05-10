@@ -31,6 +31,7 @@ const TodoListItem = (props) => {
             <Col>
                 {props.id === "new_item" ?
                     <Form.Control
+                        data-testid="textBox"
                         className="textBox"
                         type="text"
                         onChange={handleTextChange}
@@ -44,10 +45,12 @@ const TodoListItem = (props) => {
             <Col className="clearfix">
                 {props.id === "new_item" ?
                     <PlusSquare
+                        data-testid="addButton"
                         className="addButton floatRight"
                         onClick={handleAdd}
                     /> :
                     <Form.Check
+                        data-testid="formCheck"
                         className="floatRight"
                         type="checkbox"
                         id={props.id}

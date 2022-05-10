@@ -28,3 +28,27 @@ You are welcome to use comments in the code to outline any assumptions you might
 Once completed you can either push the completed solution to your own repo and send us the link or put the completed zip file/solution on some shared folder that we can get to.
 <br/><br/>
 We look forward to seeing your submission and have fun!
+
+## Solution Notes
+
+This solution uses simple API KEY authentication. In order to make sure this solution works correctly on your local environment, you must carry out the following steps:
+- Add the following environment variables to the `.env` file in the `FrontEnd` root folder:
+    - REACT_APP_API_KEY="{your_api_key}"
+    - REACT_APP_API_URL="{your_local_api_url}"
+- Add the following variables to the `appSettings.json` | `appSettings.Development.json`
+    - "API_KEY": "{your_api_key}"
+
+When running the solution locally, you must make sure that both the backend and frontend components are running. You can do this in any way you wish, but for debugging purposes you can carry out the following:
+- Open `developer-assessment\Backend\TodoList.Api\TodoList.Api` in Visual Studio and run the `IIS Express` debug configuration
+- Open a terminal session at `developer-assessment\Frontend` and run the `npm start` command
+
+When testing the application locally you can so by running the following commands respectfully:
+- Open `developer-assessment\Backend\TodoList.Api\TodoList.Api` in Visual Studio and run all tests in the Test Explorer
+- Open a terminal session at `developer-assessment\Frontend` and run the `npm test` command
+
+## Screenshots
+
+![](./Screenshots/EmptyList.png)
+![](./Screenshots/CS%20Validation.png)
+![](./Screenshots/Error%20toasts%20based%20on%20BE%20responses.png)
+![](./Screenshots/Mark%20as%20Completed%20Func.png)

@@ -40,11 +40,11 @@ This solution uses simple API KEY authentication. In order to make sure this sol
 
 When running the solution locally, you must make sure that both the backend and frontend components are running. You can do this in any way you wish, but for debugging purposes you can carry out the following:
 - Open `developer-assessment\Backend\TodoList.Api\TodoList.Api` in Visual Studio and run the `IIS Express` debug configuration
-- Open a terminal session at `developer-assessment\Frontend` and run the `npm start` command
+- Open a terminal session at `developer-assessment\Frontend` and run the `npm install` + `npm start` commands
 
 When testing the application locally you can so by running the following commands respectfully:
 - Open `developer-assessment\Backend\TodoList.Api\TodoList.Api` in Visual Studio and run all tests in the Test Explorer
-- Open a terminal session at `developer-assessment\Frontend` and run the `npm test` command
+- Open a terminal session at `developer-assessment\Frontend` and run the `npm install` + `npm test` commands + `a when prompted` 
 
 ## Screenshots
 

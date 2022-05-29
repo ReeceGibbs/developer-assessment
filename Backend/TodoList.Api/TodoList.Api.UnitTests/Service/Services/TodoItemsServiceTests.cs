@@ -1,24 +1,23 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TodoList.Infrastructure.Data.Contexts;
+using TodoList.Infrastructure.Data.Models;
+using TodoList.Service.Services;
 using Xunit;
-using TodoList.Api.Context;
-using TodoList.Api.Models;
-using TodoList.Api.Services;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace TodoList.Api.UnitTests.Services
+namespace TodoList.UnitTests.Service.Services
 {
-    public class TodoItemsService_Test
+    public class TodoItemsServiceTests
     {
         private readonly DbContextOptions<TodoContext> _contextOptions;
         private readonly List<TodoItem> _mockTodoItems;
 
-        public TodoItemsService_Test()
+        public TodoItemsServiceTests()
         {
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkInMemoryDatabase()

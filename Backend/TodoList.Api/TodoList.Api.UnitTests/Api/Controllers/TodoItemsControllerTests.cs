@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using System;
@@ -7,19 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TodoList.Api.ApiModels;
 using TodoList.Api.Controllers;
-using TodoList.Api.Models;
-using TodoList.Api.Services;
+using TodoList.Infrastructure.Data.Models;
+using TodoList.Service.Services;
 using Xunit;
 
-namespace TodoList.Api.UnitTests.Controllers
+namespace TodoList.UnitTests.Api.Controllers
 {
-    public class TodoItemsController_Test
+    public class TodoItemsControllerTests
     {
         private readonly Mock<ITodoItemsService> _todoItemsService;
         private readonly TodoItemsController _todoItemsController;
 
-        public TodoItemsController_Test()
+        public TodoItemsControllerTests()
         {
             _todoItemsService = new Mock<ITodoItemsService>();
             _todoItemsController = new TodoItemsController(_todoItemsService.Object);

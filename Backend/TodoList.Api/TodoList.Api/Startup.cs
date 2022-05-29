@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using TodoList.Api.Context;
 using TodoList.Api.Middleware;
-using TodoList.Api.Services;
 using TodoList.Api.Swashbuckle;
+using TodoList.Infrastructure.Data.Contexts;
+using TodoList.Service.Services;
 
 namespace TodoList.Api
 {

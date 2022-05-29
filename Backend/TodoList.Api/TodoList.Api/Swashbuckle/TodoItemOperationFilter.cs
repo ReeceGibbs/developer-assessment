@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
-using TodoList.Api.Models;
+using TodoList.Infrastructure.Data.Models;
 
 namespace TodoList.Api.Swashbuckle
 {
@@ -9,25 +9,6 @@ namespace TodoList.Api.Swashbuckle
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (operation.OperationId == "TodoItemPut" || operation.OperationId == "TodoItemPost")
-            {
-                operation.Parameters.Clear();
-
-                operation.RequestBody = new OpenApiRequestBody()
-                {
-                    Content = new Dictionary<string, OpenApiMediaType>()
-                    {
-                        {
-                            "application/json",
-                            new OpenApiMediaType
-                            {
-                                Schema = context.SchemaGenerator.GenerateSchema(typeof(TodoItem), context.SchemaRepository)
-                            }
-                        }
-                    }
-                };
-            }
-
             operation.Parameters.Add(new OpenApiParameter
             {
                 Name = "API_KEY",

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace TodoList.Api.Models
+namespace TodoList.Api.ApiModels
 {
     public class Response<T>
     {

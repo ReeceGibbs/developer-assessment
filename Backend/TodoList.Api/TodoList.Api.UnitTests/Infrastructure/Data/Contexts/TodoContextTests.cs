@@ -5,17 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TodoList.Api.Context;
-using TodoList.Api.Models;
+using TodoList.Infrastructure.Data.Contexts;
+using TodoList.Infrastructure.Data.Models;
 using Xunit;
 
-namespace TodoList.Api.UnitTests.Context
+namespace TodoList.UnitTests.Infrastructure.Data.Contexts
 {
-    public class TodoContext_Test
+    public class TodoContextTests
     {
         private readonly DbContextOptions<TodoContext> _contextOptions;
 
-        public TodoContext_Test()
+        public TodoContextTests()
         {
             var serviceProvider = new ServiceCollection()
                .AddEntityFrameworkInMemoryDatabase()

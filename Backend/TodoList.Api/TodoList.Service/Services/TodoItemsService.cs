@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using TodoList.Api.Context;
-using TodoList.Api.Models;
+using TodoList.Infrastructure.Data.Contexts;
+using TodoList.Infrastructure.Data.Models;
 
-namespace TodoList.Api.Services
+namespace TodoList.Service.Services
 {
     public class TodoItemsService : ITodoItemsService
     {

@@ -5,12 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using TodoList.Api.Models;
+using TodoList.Api.ApiModels;
+using TodoList.Infrastructure.Data.Models;
 using Xunit;
 
-namespace TodoList.Api.UnitTests.Models
+namespace TodoList.UnitTests.Api.ApiModels
 {
-    public class Response_Test
+    public class ResponseTests
     {
         [Fact]
         public void SuccessResponse()

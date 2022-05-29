@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Threading.Tasks;
-using TodoList.Api.Models;
+using TodoList.Api.ApiModels;
 
 namespace TodoList.Api.Middleware
 {

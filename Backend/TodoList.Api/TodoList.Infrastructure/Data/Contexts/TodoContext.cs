@@ -18,23 +18,19 @@ namespace TodoList.Infrastructure.Data.Contexts
             return base.SaveChangesAsync();
         }
 
-        public async Task AddAndSaveAsync(TodoItem todoItem)
+        public void Add(TodoItem todoItem)
         {
             TodoItems.Add(todoItem);
-            await SaveChangesAsync();
         }
 
-        public async Task UpdateAndSaveAsync(TodoItem todoItem)
+        public void Update(TodoItem todoItem)
         {
             base.Entry(todoItem).State = EntityState.Modified;
-            await SaveChangesAsync();
         }
 
-        public async Task DeleteAndSaveAsync(Guid id)
+        public void Delete(TodoItem todoItem)
         {
-            var todoItem = await TodoItems.FindAsync(id);
             base.Entry(todoItem).State = EntityState.Deleted;
-            await SaveChangesAsync();
         }
     }
 }

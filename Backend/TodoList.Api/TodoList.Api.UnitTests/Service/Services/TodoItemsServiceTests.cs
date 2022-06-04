@@ -97,6 +97,7 @@ namespace TodoList.UnitTests.Service.Services
 
                 TodoItemsService todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.UpdateTodoItem(
+                    Guid.NewGuid(),
                     new TodoItem()
                     {
                         Id = _mockTodoItems[0].Id,
@@ -119,16 +120,6 @@ namespace TodoList.UnitTests.Service.Services
                 var todoItem = await todoItemsService.DeleteTodoItem(_mockTodoItems[0].Id);
 
                 Assert.Null(context.TodoItems.AsNoTracking().FirstOrDefault(x => x.Id == _mockTodoItems[0].Id));
-            }
-        }
-
-        [Fact]
-        public async Task TodoItemIdExists()
-        {
-            using (var context = new TodoContext(_contextOptions))
-            {
-                TodoItemsService todoItemsService = new TodoItemsService(context);
-                Assert.True(await todoItemsService.TodoItemIdExists(_mockTodoItems[0].Id));
             }
         }
 

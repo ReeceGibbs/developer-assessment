@@ -24,14 +24,14 @@ namespace TodoList.UnitTests.Api.ApiModels
                 IsCompleted = false
             };
 
-            var expectedValue = new Response<TodoItem>()
+            var expectedValue = new TodoItemResponseDto<TodoItem>()
             {
                 Success = true,
                 Data = mockData,
                 Error = null
             };
 
-            var response = ResponseExtensions<TodoItem>.SuccessResponse(mockStatusCode, mockData);
+            var response = TodoItemResponseBuilder.SuccessResponse(mockStatusCode, mockData);
 
             Assert.Equal(200, response.StatusCode);
             Assert.Equal(JsonConvert.SerializeObject(expectedValue),
@@ -44,14 +44,14 @@ namespace TodoList.UnitTests.Api.ApiModels
             var mockStatusCode = HttpStatusCode.InternalServerError;
             var mockErrorMessage = "Database access error";
 
-            var expectedValue = new Response<TodoItem>()
+            var expectedValue = new TodoItemResponseDto<TodoItem>()
             {
                 Success = false,
                 Data = null,
                 Error = new KeyValuePair<string, string>(mockStatusCode.ToString(), mockErrorMessage)
             };
 
-            var response = ResponseExtensions<TodoItem>.FailureResponse(mockStatusCode, mockErrorMessage);
+            var response = TodoItemResponseBuilder.FailureResponse(mockStatusCode, mockErrorMessage);
 
             Assert.Equal(500, response.StatusCode);
             Assert.Equal(JsonConvert.SerializeObject(expectedValue),

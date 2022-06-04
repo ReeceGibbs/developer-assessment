@@ -4,18 +4,18 @@ using System.Net;
 
 namespace TodoList.Api.ApiModels
 {
-    public class Response<T>
+    public class TodoItemResponseDto<T>
     {
         public bool Success { get; set; }
         public T Data { get; set; }
         public KeyValuePair<string, string>? Error { get; set; }
     }
 
-    public static class ResponseExtensions<T>
+    public static class TodoItemResponseBuilder
     {
-        public static ObjectResult SuccessResponse(HttpStatusCode statusCode, T data)
+        public static ObjectResult SuccessResponse<T>(HttpStatusCode statusCode, T data)
         {
-            Response<T> response = new Response<T>();
+            TodoItemResponseDto<T> response = new TodoItemResponseDto<T>();
             response.Success = true;
             response.Data = data;
 
@@ -24,7 +24,7 @@ namespace TodoList.Api.ApiModels
 
         public static ObjectResult FailureResponse(HttpStatusCode statusCode, string errorMessage)
         {
-            Response<T> response = new Response<T>();
+            TodoItemResponseDto<object> response = new TodoItemResponseDto<object>();
             response.Success = false;
             response.Error = new KeyValuePair<string, string>(statusCode.ToString(), errorMessage);
 

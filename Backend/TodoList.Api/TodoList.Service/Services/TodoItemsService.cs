@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TodoList.Infrastructure.Data.Contexts;
 using TodoList.Infrastructure.Data.Models;
@@ -18,47 +16,41 @@ namespace TodoList.Service.Services
             _context = context;
         }
 
-        public async Task<List<TodoItem>> GetTodoItemsList()
+        public ValueTask<TodoItem> GetTodoItemById(Guid id) => _context.TodoItems.FindAsync(id);
+
+        public Task<List<TodoItem>> GetTodoItemsList() => _context.TodoItems.ToListAsync();
+
+        public Task<bool> TodoItemDescriptionExists(string description) => _context.TodoItems.AnyAsync(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
+
+        public async Task<TodoItem> CreateTodoItem(TodoItem newTodoItem)
         {
-            return await _context.TodoItems.ToListAsync();
+            _context.Add(newTodoItem);
+            await _context.SaveChangesAsync();
+
+            return newTodoItem;
         }
 
-        public async Task<TodoItem> GetTodoItemById(Guid id)
+        public async Task<TodoItem> UpdateTodoItem(Guid id, TodoItem updatedTodoItem)
         {
-            return await _context.TodoItems.FindAsync(id);
-        }
+            var todoItem = await GetTodoItemById(id);
 
-        public async Task<TodoItem> CreateTodoItem(TodoItem todoItem)
-        {
-            todoItem.Description = todoItem.Description?.Trim();
-            await _context.AddAndSaveAsync(todoItem);
+            todoItem.Description = updatedTodoItem.Description;
+            todoItem.IsCompleted = updatedTodoItem.IsCompleted;
 
-            return todoItem;
-        }
-
-        public async Task<TodoItem> UpdateTodoItem(TodoItem todoItem)
-        {
-            todoItem.Description = todoItem.Description?.Trim();
-            await _context.UpdateAndSaveAsync(todoItem);
+            _context.Update(todoItem);
+            await _context.SaveChangesAsync();
 
             return todoItem;
         }
 
         public async Task<Guid> DeleteTodoItem(Guid id)
         {
-            await _context.DeleteAndSaveAsync(id);
+            var todoItem = await GetTodoItemById(id);
+
+            _context.Delete(todoItem);
+            await _context.SaveChangesAsync();
+
             return id;
-        }
-
-        public async Task<bool> TodoItemIdExists(Guid id)
-        {
-            return await _context.TodoItems.AnyAsync(x => x.Id == id);
-        }
-
-        public async Task<bool> TodoItemDescriptionExists(string description)
-        {
-            return await _context.TodoItems
-                   .AnyAsync(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
         }
     }
 }

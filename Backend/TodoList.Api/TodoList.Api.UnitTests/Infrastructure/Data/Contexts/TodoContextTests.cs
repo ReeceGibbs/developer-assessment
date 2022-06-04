@@ -41,20 +41,21 @@ namespace TodoList.UnitTests.Infrastructure.Data.Contexts
         }
 
         [Fact]
-        public async Task AddAndSaveAsync()
+        public async Task AddAsync()
         {
             using (var context = new TodoContext(_contextOptions))
             {
                 Assert.Empty(context.TodoItems);
 
-                await context.AddAndSaveAsync(new TodoItem());
+                await context.AddAsync(new TodoItem());
+                await context.SaveChangesAsync();
 
                 Assert.Single(context.TodoItems);
             }
         }
 
         [Fact]
-        public async Task UpdateAndSaveAsync()
+        public async Task Update()
         {
             using (var context = new TodoContext(_contextOptions))
             {
@@ -74,7 +75,8 @@ namespace TodoList.UnitTests.Infrastructure.Data.Contexts
 
                 mockTodoItem.IsCompleted = true;
 
-                await context.UpdateAndSaveAsync(mockTodoItem);
+                context.Update(mockTodoItem);
+                await context.SaveChangesAsync();
 
                 Assert.True(context.TodoItems.Find(mockGuid).IsCompleted);
             }
@@ -99,7 +101,8 @@ namespace TodoList.UnitTests.Infrastructure.Data.Contexts
 
                 Assert.Single(context.TodoItems);
 
-                await context.DeleteAndSaveAsync(mockGuid);
+                context.Delete(mockTodoItem);
+                await context.SaveChangesAsync();
 
                 Assert.Empty(context.TodoItems);
             }

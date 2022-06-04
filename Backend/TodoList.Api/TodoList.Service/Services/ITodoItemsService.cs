@@ -9,12 +9,11 @@ namespace TodoList.Service.Services
 {
     public interface ITodoItemsService
     {
+        ValueTask<TodoItem> GetTodoItemById(Guid id);
         Task<List<TodoItem>> GetTodoItemsList();
-        Task<TodoItem> GetTodoItemById(Guid id);
-        Task<TodoItem> CreateTodoItem(TodoItem todoItem);
-        Task<TodoItem> UpdateTodoItem(TodoItem todoItem);
-        Task<Guid> DeleteTodoItem(Guid id);
-        Task<bool> TodoItemIdExists(Guid id);
         Task<bool> TodoItemDescriptionExists(string description);
+        Task<TodoItem> CreateTodoItem(TodoItem todoItem);
+        Task<TodoItem> UpdateTodoItem(Guid id, TodoItem todoItem);
+        Task<Guid> DeleteTodoItem(Guid id);
     }
 }

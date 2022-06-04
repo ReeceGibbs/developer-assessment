@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using TodoList.Api.ApiModels;
 using TodoList.Infrastructure.Data.Models;
@@ -17,107 +14,52 @@ namespace TodoList.Api.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoItemsService _todoItemsService;
+        private readonly IMapper _mapper;
 
-        public TodoItemsController(ITodoItemsService todoItemsService)
+        public TodoItemsController(ITodoItemsService todoItemsService, IMapper mapper)
         {
             _todoItemsService = todoItemsService;
+            _mapper = mapper;
         }
-
-        private static string ToResponseMessage(HttpStatusCode httpStatusCode) => httpStatusCode switch
-        {
-            HttpStatusCode.NotFound => "Todo item not found",
-            HttpStatusCode.Conflict => "Description already exists",
-            _=> "Unmapped error code"
-        };
 
         // GET api/todoitems
         [HttpGet]
         public async Task<IActionResult> GetTodoItems()
         {
-            try
-            {
-                var results = await _todoItemsService.GetTodoItemsList();
-                return ResponseExtensions<List<TodoItem>>.SuccessResponse(HttpStatusCode.OK, results);
-            }
-            catch (Exception ex)
-            {
-                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
+            var results = await _todoItemsService.GetTodoItemsList();
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, results);
         }
 
         // GET api/todoitems/{guid}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTodoItem(Guid id)
         {
-            try
-            {
-                if (!await _todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
-
-                var result = await _todoItemsService.GetTodoItemById(id);
-                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
-            }
-            catch (Exception ex)
-            {
-                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
+            var result = await _todoItemsService.GetTodoItemById(id);
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, result);
         }
 
         // PUT api/todoitems
-        [HttpPut]
-        public async Task<IActionResult> PutTodoItem([FromBody] TodoItem todoItem)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTodoItem(Guid id, [FromBody] TodoItemRequestDto todoItemRequestDto)
         {
-            try
-            {
-                if (!await _todoItemsService.TodoItemIdExists(todoItem.Id))
-                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
-
-                if (!todoItem.IsCompleted && await _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
-
-                var result = await _todoItemsService.UpdateTodoItem(todoItem);
-                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.OK, result);
-            }
-            catch (Exception ex)
-            {
-                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
+            var result = await _todoItemsService.UpdateTodoItem(id, _mapper.Map<TodoItem>(todoItemRequestDto));
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, result);
         }
 
         // POST api/todoitems
         [HttpPost]
-        public async Task<IActionResult> PostTodoItem([FromBody] TodoItem todoItem)
+        public async Task<IActionResult> PostTodoItem([FromBody] TodoItemRequestDto todoItemRequestDto)
         {
-            try
-            {
-                if (await _todoItemsService.TodoItemDescriptionExists(todoItem.Description))
-                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.Conflict, ToResponseMessage(HttpStatusCode.Conflict));
-
-                var result = await _todoItemsService.CreateTodoItem(todoItem);
-                return ResponseExtensions<TodoItem>.SuccessResponse(HttpStatusCode.Created, result);
-            }
-            catch (Exception ex)
-            {
-                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
+            var result = await _todoItemsService.CreateTodoItem(_mapper.Map<TodoItem>(todoItemRequestDto));
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.Created, result);
         }
 
         // DELETE api/todoitems/{guid}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(Guid id)
         {
-            try
-            {
-                if (!await _todoItemsService.TodoItemIdExists(id))
-                    return ResponseExtensions<object>.FailureResponse(HttpStatusCode.NotFound, ToResponseMessage(HttpStatusCode.NotFound));
-
-                var result = await _todoItemsService.DeleteTodoItem(id);
-                return ResponseExtensions<object>.SuccessResponse(HttpStatusCode.NoContent, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseExtensions<object>.FailureResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
+            var result = await _todoItemsService.DeleteTodoItem(id);
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.NoContent, new { });
         }
     }
 }

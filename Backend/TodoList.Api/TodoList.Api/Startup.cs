@@ -1,3 +1,5 @@
+using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TodoList.Api.Filters;
+using TodoList.Api.MappingProfile;
 using TodoList.Api.Middleware;
 using TodoList.Api.Swashbuckle;
 using TodoList.Infrastructure.Data.Contexts;
@@ -35,8 +39,6 @@ namespace TodoList.Api
                       });
             });
 
-            services.AddControllers();
-
             // We use custom operation filters to cater for the custom model binders when using swagger
             services.AddSwaggerGen(c =>
             {
@@ -48,6 +50,22 @@ namespace TodoList.Api
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoItemsDB"));
             services.AddScoped<ITodoContext, TodoContext>();
             services.AddScoped<ITodoItemsService, TodoItemsService>();
+
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ApiExceptionFilterAttribute>();
+                options.Filters.Add<ApiAuthFilterAttribute>();
+            })
+            .AddFluentValidation(options =>
+                options.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new TodoItemMappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,8 +89,6 @@ namespace TodoList.Api
             app.UseCors("AllowAllHeaders");
 
             app.UseAuthorization();
-
-            app.UseMiddleware<RequestAuthMiddleware>();
 
             app.UseMiddleware<RequestLoggingMiddleware>();
 

@@ -12,8 +12,8 @@ namespace TodoList.Infrastructure.Data.Contexts
     {
         DbSet<TodoItem> TodoItems { get; set; }
         Task<int> SaveChangesAsync();
-        Task AddAndSaveAsync(TodoItem todoItem);
-        Task UpdateAndSaveAsync(TodoItem todoItem);
-        Task DeleteAndSaveAsync(Guid id);
+        void Add(TodoItem todoItem);
+        void Update(TodoItem todoItem);
+        void Delete(TodoItem todoItem);
     }
 }

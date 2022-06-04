@@ -8,9 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TodoList.Api.Filters;
-using TodoList.Api.MappingProfile;
 using TodoList.Api.Middleware;
 using TodoList.Api.Swashbuckle;
+using TodoList.Common.Mappings;
+using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Contexts;
 using TodoList.Service.Services;
 
@@ -57,7 +58,7 @@ namespace TodoList.Api
                 options.Filters.Add<ApiAuthFilterAttribute>();
             })
             .AddFluentValidation(options =>
-                options.RegisterValidatorsFromAssemblyContaining<Startup>());
+                options.RegisterValidatorsFromAssemblyContaining<TodoItemRequestDtoValidator>());
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {

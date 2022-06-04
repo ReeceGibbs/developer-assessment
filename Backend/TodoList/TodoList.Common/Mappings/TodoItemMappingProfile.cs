@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using TodoList.Api.ApiModels;
+using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Models;
 
-namespace TodoList.Api.MappingProfile
+namespace TodoList.Common.Mappings
 {
     public class TodoItemMappingProfile : Profile
     {

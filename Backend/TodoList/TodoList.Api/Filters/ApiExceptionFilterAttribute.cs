@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
-using TodoList.Api.Exceptions;
+using TodoList.Common.Exceptions;
 
 namespace TodoList.Api.Filters
 {

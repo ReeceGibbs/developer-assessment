@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using TodoList.Api.ApiModels;
+using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Models;
 using TodoList.Service.Services;
 
@@ -30,14 +30,6 @@ namespace TodoList.Api.Controllers
             return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, results);
         }
 
-        // GET api/todoitems/{guid}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTodoItem(Guid id)
-        {
-            var result = await _todoItemsService.GetTodoItemById(id);
-            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, result);
-        }
-
         // PUT api/todoitems
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(Guid id, [FromBody] TodoItemRequestDto todoItemRequestDto)
@@ -59,7 +51,7 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> DeleteTodoItem(Guid id)
         {
             var result = await _todoItemsService.DeleteTodoItem(id);
-            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.NoContent, new { });
+            return TodoItemResponseBuilder.SuccessResponse(HttpStatusCode.OK, result);
         }
     }
 }

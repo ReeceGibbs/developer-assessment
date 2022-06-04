@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TodoList.Api.ApiModels;
 using TodoList.Api.Controllers;
+using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Models;
 using TodoList.Service.Services;
 using Xunit;
@@ -76,65 +76,6 @@ namespace TodoList.UnitTests.Api.Controllers
             };
 
             var result = (ObjectResult)await _todoItemsController.GetTodoItems();
-
-            Assert.Equal(500, result.StatusCode);
-            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
-                JsonConvert.SerializeObject(result.Value));
-        }
-
-        [Fact]
-        public async Task GetTodoItem_success()
-        {
-            var mockTodoItem = new TodoItem()
-            {
-                Id = Guid.NewGuid(),
-                Description = "Test 0",
-                IsCompleted = false
-            };
-
-            _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Returns(ValueTask.FromResult(mockTodoItem));
-
-            var expectedResult = new TodoItemResponseDto<TodoItem>()
-            {
-                Success = true,
-                Data = mockTodoItem
-            };
-
-            var result = (ObjectResult)await _todoItemsController.GetTodoItem(Guid.NewGuid());
-
-            Assert.Equal(200, result.StatusCode);
-            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
-                JsonConvert.SerializeObject(result.Value));
-        }
-
-        [Fact]
-        public async Task GetTodoItem_not_found()
-        {
-            var expectedResult = new TodoItemResponseDto<TodoItem>()
-            {
-                Success = false,
-                Error = new KeyValuePair<string, string>("NotFound", "Todo item not found")
-            };
-
-            var result = (ObjectResult)await _todoItemsController.GetTodoItem(Guid.NewGuid());
-
-            Assert.Equal(404, result.StatusCode);
-            Assert.Equal(JsonConvert.SerializeObject(expectedResult),
-                JsonConvert.SerializeObject(result.Value));
-        }
-
-        [Fact]
-        public async Task GetTodoItem_server_error()
-        {
-            _todoItemsService.Setup(s => s.GetTodoItemById(It.IsAny<Guid>())).Throws(new Exception("Database access error"));
-
-            var expectedResult = new TodoItemResponseDto<List<TodoItem>>()
-            {
-                Success = false,
-                Error = new KeyValuePair<string, string>("InternalServerError", "Database access error")
-            };
-
-            var result = (ObjectResult)await (_todoItemsController.GetTodoItem(Guid.NewGuid()));
 
             Assert.Equal(500, result.StatusCode);
             Assert.Equal(JsonConvert.SerializeObject(expectedResult),

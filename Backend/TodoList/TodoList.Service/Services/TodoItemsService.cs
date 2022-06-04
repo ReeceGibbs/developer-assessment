@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TodoList.Common.Exceptions;
 using TodoList.Infrastructure.Data.Contexts;
 using TodoList.Infrastructure.Data.Models;
 
@@ -34,6 +35,11 @@ namespace TodoList.Service.Services
         {
             var todoItem = await GetTodoItemById(id);
 
+            if (todoItem == null)
+            {
+                throw new NotFoundException("TodoItem", id);
+            }
+
             todoItem.Description = updatedTodoItem.Description;
             todoItem.IsCompleted = updatedTodoItem.IsCompleted;
 
@@ -46,6 +52,11 @@ namespace TodoList.Service.Services
         public async Task<Guid> DeleteTodoItem(Guid id)
         {
             var todoItem = await GetTodoItemById(id);
+
+            if (todoItem == null)
+            {
+                throw new NotFoundException("TodoItem", id);
+            }
 
             _context.Delete(todoItem);
             await _context.SaveChangesAsync();

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using TodoList.Api.ApiModels;
+using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Models;
 using Xunit;
 

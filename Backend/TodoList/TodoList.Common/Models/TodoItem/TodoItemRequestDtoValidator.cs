@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
-using TodoList.Api.ApiModels;
 
-namespace TodoList.Api.Validators
+namespace TodoList.Common.Models.TodoItem
 {
-    public class TodoItemRequestDtoValidator: AbstractValidator<TodoItemRequestDto>
+    public class TodoItemRequestDtoValidator : AbstractValidator<TodoItemRequestDto>
     {
         public TodoItemRequestDtoValidator()
         {

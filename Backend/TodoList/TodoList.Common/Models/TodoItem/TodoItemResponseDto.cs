@@ -19,7 +19,7 @@ namespace TodoList.Common.Models.TodoItem
     {
         public static ObjectResult SuccessResponse<T>(HttpStatusCode statusCode, T data)
         {
-            TodoItemResponseDto<T> response = new TodoItemResponseDto<T>();
+            var response = new TodoItemResponseDto<T>();
             response.Success = true;
             response.Data = data;
 
@@ -28,7 +28,7 @@ namespace TodoList.Common.Models.TodoItem
 
         public static ObjectResult FailureResponse(HttpStatusCode statusCode, string errorMessage)
         {
-            TodoItemResponseDto<object> response = new TodoItemResponseDto<object>();
+            var response = new TodoItemResponseDto<object>();
             response.Success = false;
             response.Error = new KeyValuePair<string, string>(statusCode.ToString(), errorMessage);
 

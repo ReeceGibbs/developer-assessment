@@ -33,13 +33,13 @@ namespace TodoList.UnitTests.Service.Services
                 {
                     new TodoItem()
                     {
-                        Id = new Guid("fede7bcd-20a0-4c7a-8077-219dbd0118f4"),
+                        Id = Guid.NewGuid(),
                         Description = "Test 0",
                         IsCompleted = false
                     },
                     new TodoItem()
                     {
-                        Id = new Guid("de30013b-96c0-477a-b704-2d4977637d14"),
+                        Id = Guid.NewGuid(),
                         Description = "Test 1",
                         IsCompleted = true
                     },
@@ -55,7 +55,7 @@ namespace TodoList.UnitTests.Service.Services
         {
             using (var context = new TodoContext(_contextOptions))
             {
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 var todoItems = await todoItemsService.GetTodoItemsList();
 
                 Assert.Equal(2, todoItems.Count);
@@ -67,7 +67,7 @@ namespace TodoList.UnitTests.Service.Services
         {
             using (var context = new TodoContext(_contextOptions))
             {
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.GetTodoItemById(_mockTodoItems[0].Id);
 
                 Assert.Equal(_mockTodoItems[0].Id, todoItem.Id);
@@ -81,7 +81,7 @@ namespace TodoList.UnitTests.Service.Services
             {
                 Assert.Equal(2, context.TodoItems.Count());
 
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.CreateTodoItem(new TodoItem());
 
                 Assert.Equal(3, context.TodoItems.Count());
@@ -95,12 +95,11 @@ namespace TodoList.UnitTests.Service.Services
             {
                 Assert.False(context.TodoItems.AsNoTracking().FirstOrDefault(x => x.Id == _mockTodoItems[0].Id).IsCompleted);
 
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.UpdateTodoItem(
-                    Guid.NewGuid(),
+                    _mockTodoItems[0].Id,
                     new TodoItem()
                     {
-                        Id = _mockTodoItems[0].Id,
                         Description = "Test 0",
                         IsCompleted = true
                     });
@@ -116,7 +115,7 @@ namespace TodoList.UnitTests.Service.Services
             {
                 Assert.NotNull(context.TodoItems.AsNoTracking().FirstOrDefault(x => x.Id == _mockTodoItems[0].Id));
 
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 var todoItem = await todoItemsService.DeleteTodoItem(_mockTodoItems[0].Id);
 
                 Assert.Null(context.TodoItems.AsNoTracking().FirstOrDefault(x => x.Id == _mockTodoItems[0].Id));
@@ -128,7 +127,7 @@ namespace TodoList.UnitTests.Service.Services
         {
             using (var context = new TodoContext(_contextOptions))
             {
-                TodoItemsService todoItemsService = new TodoItemsService(context);
+                var todoItemsService = new TodoItemsService(context);
                 Assert.True(await todoItemsService.TodoItemDescriptionExists(_mockTodoItems[0].Description));
             }
         }

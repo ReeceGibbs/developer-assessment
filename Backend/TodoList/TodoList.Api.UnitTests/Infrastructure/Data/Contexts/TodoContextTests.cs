@@ -59,7 +59,7 @@ namespace TodoList.UnitTests.Infrastructure.Data.Contexts
         {
             using (var context = new TodoContext(_contextOptions))
             {
-                var mockGuid = new Guid("69802775-0810-498e-b7b2-818c16885f27");
+                var mockGuid = Guid.NewGuid();
                 var mockTodoItem = new TodoItem()
                 {
                     Id = mockGuid,
@@ -87,7 +87,7 @@ namespace TodoList.UnitTests.Infrastructure.Data.Contexts
         {
             using (var context = new TodoContext(_contextOptions))
             {
-                var mockGuid = new Guid("69802775-0810-498e-b7b2-818c16885f27");
+                var mockGuid = Guid.NewGuid();
                 var mockTodoItem = new TodoItem()
                 {
                     Id = mockGuid,

@@ -17,14 +17,20 @@ namespace TodoList.Service.Services
             _context = context;
         }
 
-        public ValueTask<TodoItem> GetTodoItemById(Guid id) => _context.TodoItems.FindAsync(id);
-
         public Task<List<TodoItem>> GetTodoItemsList() => _context.TodoItems.ToListAsync();
 
-        public Task<bool> TodoItemDescriptionExists(string description) => _context.TodoItems.AnyAsync(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted);
+        public ValueTask<TodoItem> GetTodoItemById(Guid id) => _context.TodoItems.FindAsync(id);
+
+        public Task<bool> TodoItemDescriptionExists(string description, Guid? todoItemId = null) => 
+            _context.TodoItems.AnyAsync(x => x.Description.Trim().ToLowerInvariant() == description.Trim().ToLowerInvariant() && !x.IsCompleted && x.Id != todoItemId);
 
         public async Task<TodoItem> CreateTodoItem(TodoItem newTodoItem)
         {
+            if (await TodoItemDescriptionExists(newTodoItem.Description))
+            {
+                throw new DescriptionExistsException(newTodoItem.Description);
+            }
+
             _context.Add(newTodoItem);
             await _context.SaveChangesAsync();
 
@@ -38,6 +44,11 @@ namespace TodoList.Service.Services
             if (todoItem == null)
             {
                 throw new NotFoundException("TodoItem", id);
+            }
+
+            if (await TodoItemDescriptionExists(updatedTodoItem.Description, todoItem.Id))
+            {
+                throw new DescriptionExistsException(updatedTodoItem.Description);
             }
 
             todoItem.Description = updatedTodoItem.Description;

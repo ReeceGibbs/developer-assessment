@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using TodoList.Common.Builders;
 using TodoList.Common.Exceptions;
+using TodoList.Common.Models.Common;
 
 namespace TodoList.Api.Filters
 {
@@ -19,6 +22,7 @@ namespace TodoList.Api.Filters
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+                { typeof(DescriptionExistsException), HandleDescriptionExistsException }
             };
         }
 
@@ -54,8 +58,7 @@ namespace TodoList.Api.Filters
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
 
-            context.Result = new BadRequestObjectResult(details);
-
+            context.Result = ResponseBuilder.Build(HttpStatusCode.BadRequest, details, false);
             context.ExceptionHandled = true;
         }
 
@@ -66,8 +69,7 @@ namespace TodoList.Api.Filters
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
 
-            context.Result = new BadRequestObjectResult(details);
-
+            context.Result = ResponseBuilder.Build(HttpStatusCode.BadRequest, details, false);
             context.ExceptionHandled = true;
         }
 
@@ -75,15 +77,14 @@ namespace TodoList.Api.Filters
         {
             var exception = (NotFoundException)context.Exception;
 
-            var details = new ProblemDetails()
+            var details = new ProblemDetails
             {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                Detail = exception.Message,
                 Title = "The specified resource was not found.",
-                Detail = exception.Message
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             };
 
-            context.Result = new NotFoundObjectResult(details);
-
+            context.Result = ResponseBuilder.Build(HttpStatusCode.NotFound, details, false);
             context.ExceptionHandled = true;
         }
 
@@ -96,10 +97,21 @@ namespace TodoList.Api.Filters
                 Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
             };
 
-            context.Result = new ObjectResult(details)
+            context.Result = ResponseBuilder.Build(HttpStatusCode.Unauthorized, details, false);
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleDescriptionExistsException(ExceptionContext context)
+        {
+            var details = new ProblemDetails
             {
-                StatusCode = StatusCodes.Status401Unauthorized
+                Status = StatusCodes.Status409Conflict,
+                Title = "Description exists",
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8"
             };
+
+            context.Result = ResponseBuilder.Build(HttpStatusCode.Conflict, details, false);
 
             context.ExceptionHandled = true;
         }

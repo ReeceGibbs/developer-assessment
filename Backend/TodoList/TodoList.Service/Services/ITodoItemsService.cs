@@ -11,7 +11,7 @@ namespace TodoList.Service.Services
     {
         ValueTask<TodoItem> GetTodoItemById(Guid id);
         Task<List<TodoItem>> GetTodoItemsList();
-        Task<bool> TodoItemDescriptionExists(string description);
+        Task<bool> TodoItemDescriptionExists(string description, Guid? todoItemId);
         Task<TodoItem> CreateTodoItem(TodoItem todoItem);
         Task<TodoItem> UpdateTodoItem(Guid id, TodoItem todoItem);
         Task<Guid> DeleteTodoItem(Guid id);

@@ -7,6 +7,7 @@ namespace TodoList.Common.Models.TodoItem
         public TodoItemRequestDtoValidator()
         {
             RuleFor(todoItem => todoItem.Description).NotEmpty();
+            RuleFor(todoItem => todoItem.IsCompleted).NotNull();
         }
     }
 }

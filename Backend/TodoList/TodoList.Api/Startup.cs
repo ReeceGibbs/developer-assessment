@@ -2,14 +2,16 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using TodoList.Api.Filters;
-using TodoList.Api.Middleware;
 using TodoList.Api.Swashbuckle;
+using TodoList.Common.Behaviours;
 using TodoList.Common.Mappings;
 using TodoList.Common.Models.TodoItem;
 using TodoList.Infrastructure.Data.Contexts;
@@ -52,13 +54,19 @@ namespace TodoList.Api
             services.AddScoped<ITodoContext, TodoContext>();
             services.AddScoped<ITodoItemsService, TodoItemsService>();
 
+            services.Configure<ApiBehaviorOptions>(options =>
+                options.SuppressModelStateInvalidFilter = true);
+
             services.AddControllers(options =>
             {
-                options.Filters.Add<ApiExceptionFilterAttribute>();
                 options.Filters.Add<ApiAuthFilterAttribute>();
+                options.Filters.Add<ApiValidationFilterAttribute>();
             })
             .AddFluentValidation(options =>
-                options.RegisterValidatorsFromAssemblyContaining<TodoItemRequestDtoValidator>());
+            {
+                options.RegisterValidatorsFromAssembly(Assembly.Load("TodoList.Common"));
+                options.AutomaticValidationEnabled = false;
+            });
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -91,7 +99,9 @@ namespace TodoList.Api
 
             app.UseAuthorization();
 
-            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ExceptionHandlingBehaviour>();
+
+            app.UseMiddleware<RequestLoggingBehaviour>();
 
             app.UseEndpoints(endpoints =>
             {

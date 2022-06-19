@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.Api", "TodoList.Api\TodoList.Api.csproj", "{065CE954-2618-4A24-A613-9C336C2154C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.UnitTests", "TodoList.Api.UnitTests\TodoList.UnitTests.csproj", "{2BBBFEED-85B6-4361-85B2-F9E08C86C55B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.UnitTests", "TodoList.UnitTests\TodoList.UnitTests.csproj", "{2BBBFEED-85B6-4361-85B2-F9E08C86C55B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{417E2611-C7E3-4765-8271-FB57C7439E76}"
 EndProject

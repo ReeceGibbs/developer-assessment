@@ -28,13 +28,17 @@ namespace TodoList.Api.Filters
             foreach (var incomingObject in incomingObjects)
             {
                 var validator = _validatorFactory.GetValidator(incomingObject.GetType());
-                var validationContext = GetValidationContext(incomingObject);
 
-                var result = await validator.ValidateAsync(validationContext);
-
-                if (result.Errors.Any())
+                if (validator != null)
                 {
-                    throw new CustomExceptions.ValidationException(result.Errors);
+                    var validationContext = GetValidationContext(incomingObject);
+
+                    var result = await validator.ValidateAsync(validationContext);
+
+                    if (result.Errors.Any())
+                    {
+                        throw new CustomExceptions.ValidationException(result.Errors);
+                    }
                 }
             }
 
